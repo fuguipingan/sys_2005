@@ -1,38 +1,16 @@
 <template>
   <div class="home">
     <el-container>
-      <!-- 左侧边栏 -->
-      <el-aside>
-        <h1 class="login"></h1>
-        <el-menu
-          default-active="1-4-1"
-          class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
-          :collapse="isCollapse"
-        >
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <span slot="title">导航一</span>
-          </el-menu-item>
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">导航二</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航三</span>
-          </el-menu-item>
+      <!-- 左侧边菜单栏 -->
+       <!-- <h1 class="login"></h1> -->
+       <el-aside width="200">
+            <h1 class="login"></h1>
+        <el-menu default-active="1-4" class="el-menu-vertical-demo" :collapse="flag">
+          <subMenu :sideMenu="$store.state.sideMenu"></subMenu>
         </el-menu>
       </el-aside>
-      <!-- 右侧边栏 -->
       <el-container>
+        <!-- 右侧边栏 -->
         <!-- 顶部栏 -->
 
         <el-header>
@@ -40,27 +18,21 @@
             <el-col :span="6"
               ><div class="grid-content bg-purple">
                 <!-- 侧边栏伸缩 -->
-                <el-radio-group
-                  v-model="isCollapse"
-                >
-                
-                <!-- <el-radio-button :label="flag"  >
+                <el-radio-group v-model="isCollapse">
+                  <!-- <el-radio-button :label="flag"  >
                    <i class="el-icon-s-unfold" :class="flag? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
                     
                   </el-radio-button> -->
-                  <el-radio-button  :label="false" v-if="flag">
-                  <i class="el-icon-s-fold"  @click="flag = !flag"></i>
-                    
+                  <el-radio-button :label="false" v-if="flag">
+                    <i class="el-icon-s-fold" @click="flag = !flag"></i>
                   </el-radio-button>
-                  <el-radio-button   :label="true" v-else>
-                     <i class="el-icon-s-unfold"  @click="flag = !flag"></i>
-                     
+                  <el-radio-button :label="true" v-else>
+                    <i class="el-icon-s-unfold" @click="flag = !flag"></i>
                   </el-radio-button>
                 </el-radio-group></div
             ></el-col>
             <el-col :span="6"
               ><div class="grid-content bg-purple-light">
-               
                 千峰管理系统
               </div></el-col
             >
@@ -82,15 +54,17 @@
           </el-row>
         </el-header>
         <!-- 主体 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <style scoped>
-.home .head-portrait{
+.home .head-portrait {
   margin: 0 10px;
-      vertical-align: middle;
+  vertical-align: middle;
 }
 .home .sign-out {
   color: red;
@@ -191,23 +165,31 @@ body > .el-container {
 
 <script>
 import { getLoginLog } from "@/api";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 // import subMenu from "../../components/subMenu"
+import { getMenuList } from "@/api";
+import SubMenu from "./SubMenu/index"
 export default {
+  components: {
+    SubMenu
+  },
   data() {
     return {
-      flag : false,
-      isCollapse: true,
-      circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-        squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
-        sizeList: ["large", "medium", "small"],
-        size:""
+      flag: true,
+      isCollapse: false,
+      circleUrl:
+        "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      squareUrl:
+        "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+      sizeList: ["large", "medium", "small"],
+      size: ""
     };
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(["userInfo", "sideMenu"])
   },
   methods: {
+    ...mapActions(["FETCH_MENULIST"]),
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -221,19 +203,28 @@ export default {
       localStorage.removeItem("qf-userInfo");
       this.$router.push("/login");
     },
-    switch1(){//侧边栏切换状态
-    console.log(1)
+    switch1() {
+      //侧边栏切换状态
+      console.log(1);
       this.flag = !this.flag;
     }
   },
   mounted() {
-    getLoginLog()
+    getLoginLog() //登录日志
       .then(res => {
-        console.log(res);
+        // console.log(res);
       })
       .catch(err => {
         console.log(err);
       });
+    getMenuList() //获取权限菜单
+      .then(res => {
+        // console.log(res);//后端返回的说需路由数据，
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    this.FETCH_MENULIST();
   }
 };
 </script>

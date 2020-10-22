@@ -2,14 +2,12 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../pages/Home";
 
+import HomePage from "../pages/Home/HomePage";
+import allRoutes from "./allRouters";
+
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
   {
     path: "/login",
     name: "Login",
@@ -26,7 +24,8 @@ const routes = [
     // this generates a separate chunk (rotation.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "rotation" */ "../pages/Rotation.vue")
+      import(/* webpackChunkName: "rotation" */ "../pages/Rotation.vue"),
+     
   }
 ];
 

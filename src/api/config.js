@@ -33,9 +33,9 @@ axios.interceptors.response.use(config=>{
     // console.log(ElementUI)
     // console.log( data )
     // console.log( data.code )
-    if( data.code == "1004" ){//code 1004 登入失效
+    if( data.code == "1004" || data.code == "10022" ){//code 1004 登入失效
         // console.log(ElementUI)
-       
+       localStorage.removeItem("qf-2005")//登录失效和过期，清楚token
         ElementUI.Message.error("登陆失效，请重新登陆")
         router.push("/login");
         

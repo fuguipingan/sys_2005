@@ -13,3 +13,5 @@ export const login = (username,password)=> axios({
 //获取登录日志
 export const getLoginLog = () => axios.get("/getloginlog");
 
+//获取权限菜单
+export const getMenuList = () => axios.get("/permission/getMenuList");

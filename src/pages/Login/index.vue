@@ -12,14 +12,14 @@
           label-width="100px"
           class="demo-loginForm"
         >
-          <el-form-item label="用户名" prop="username">
+          <el-form-item label="用户名" prop="username" @keyup.enter.native="submitForm('loginForm')">
             <el-input
               type="text"
               v-model="loginForm.username"
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+          <el-form-item label="密码" prop="password" @keyup.enter.native="submitForm('loginForm')">
             <el-input
               type="password"
               v-model="loginForm.password"
@@ -96,6 +96,8 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_USERINFO"]),
+    
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -122,9 +124,12 @@ export default {
                   type: "success"
                 });
                 localStorage.setItem("qf-2005", res.data.token);
-                localStorage.setItem("qf-userInfo",JSON.stringify(res.data.userInfo));//服务端传过来的用户信息传入本地，加密
+                localStorage.setItem(
+                  "qf-userInfo",
+                  JSON.stringify(res.data.userInfo)
+                ); //服务端传过来的用户信息传入本地，加密
                 // console.log( SET_USERINFO )
-                this.SET_USERINFO(res.data.userInfo)
+                this.SET_USERINFO(res.data.userInfo);
 
                 this.$router.push("/");
               } else {
@@ -144,7 +149,8 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    }
+    },
+   
   }
 };
 </script>
