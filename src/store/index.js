@@ -21,6 +21,7 @@ export default new Vuex.Store({
   state: {
     userInfo,
     sideMenu : [],
+    crumbs: [],
   },
   mutations: {
     SET_USERINFO(state,payload){//把服务端的用户信息放入userInfo，本地存储
@@ -36,9 +37,12 @@ export default new Vuex.Store({
       let target = dynamicRouters.find(item=> item.path === "/")
       target.children = [...userRouters];//将home页面的children中添加进入动态路由
       router.addRoutes([...dynamicRouters]);//将动态路由添加进入主路由
-      console.log(state.sideMenu);
+      // console.log(state.sideMenu);
       
-    }
+    },
+    SET_CRUMBS(state, payload) {//处理面包屑同步到crumbs中
+      state.crumbs = payload
+  }
   },
   actions: {
     async FETCH_MENULIST({commit,state},payload){//请求后台路由数据(侧边栏数据)

@@ -1,17 +1,27 @@
-import axios from "./config";
+import axios, { CancelToken } from "./config";
 
 //登入接口
-export const login = (username,password)=> axios({
-    url:"/users/login",
+export const login = (username, password) => axios({
+    url: "/users/login",
     method: "post",
-    data:{
+    data: {
         username,
         password,
     },
 })
 
 //获取登录日志
-export const getLoginLog = () => axios.get("/getloginlog");
+/* 
+**
+*@parm {Object} _this 一个组件实例
+*
+*/
+export const getLoginLog = (_this) => axios.get("/getloginlog", {
+    cancelToken: new CancelToken(function (c) {
+        // console.log(c)
+        _this.cancel = c;//相当于给组件实例 添加一个cancel属性
+    })
+});
 
 //获取权限菜单
 export const getMenuList = () => axios.get("/permission/getMenuList");

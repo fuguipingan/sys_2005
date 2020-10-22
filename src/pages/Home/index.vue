@@ -2,11 +2,15 @@
   <div class="home">
     <el-container>
       <!-- 左侧边菜单栏 -->
-       <!-- <h1 class="login"></h1> -->
-       <el-aside width="200">
-            <h1 class="login"></h1>
-        <el-menu default-active="1-4" class="el-menu-vertical-demo" :collapse="flag">
-          <subMenu :sideMenu="$store.state.sideMenu"></subMenu>
+      <!-- <h1 class="login"></h1> -->
+      <el-aside width="200">
+        <el-menu
+          :default-active="$route.path"
+          class="el-menu-vertical-demo"
+          :router="flag"
+          :collapse="isCollapse"
+        >
+          <qf-sub-menu :sideMenu="sideMenu"></qf-sub-menu>
         </el-menu>
       </el-aside>
       <el-container>
@@ -55,6 +59,19 @@
         </el-header>
         <!-- 主体 -->
         <el-main>
+          <!-- 面包屑 -->
+
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/HomePage' }"
+              >首页</el-breadcrumb-item
+            >
+            <el-breadcrumb-item
+              :to="{ path: item.meta.fullPath }"
+              v-for="(item, index) in crumbs"
+              :key="index"
+              >{{ item.meta.name }}</el-breadcrumb-item
+            >
+          </el-breadcrumb>
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -168,10 +185,12 @@ import { getLoginLog } from "@/api";
 import { mapState, mapActions } from "vuex";
 // import subMenu from "../../components/subMenu"
 import { getMenuList } from "@/api";
-import SubMenu from "./SubMenu/index"
+// import SubMenu from "./SubMenu/index";
+import Breadcrumb from "./Breadcrumb";
+// import {} from "qf";
 export default {
   components: {
-    SubMenu
+    Breadcrumb
   },
   data() {
     return {
@@ -186,7 +205,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userInfo", "sideMenu"])
+    ...mapState(["userInfo", "sideMenu", "crumbs"])
   },
   methods: {
     ...mapActions(["FETCH_MENULIST"]),
@@ -202,21 +221,32 @@ export default {
       localStorage.removeItem("qf-2005");
       localStorage.removeItem("qf-userInfo");
       this.$router.push("/login");
+      window.location.reload();
     },
     switch1() {
       //侧边栏切换状态
       console.log(1);
       this.flag = !this.flag;
+    },
+    name() {
+      let routerName = this.$route.name; //当前路由名称
+      let rout = this.$route.path; //当前路由路径
+
+      return [routerName, rout];
     }
   },
   mounted() {
-    getLoginLog() //登录日志
-      .then(res => {
-        // console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // console.log(this.sideMenu);
+    // let rout = this.$route;
+    // console.log(rout);
+
+    // getLoginLog() //登录日志
+    //   .then(res => {
+    //     // console.log(res);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
     getMenuList() //获取权限菜单
       .then(res => {
         // console.log(res);//后端返回的说需路由数据，
@@ -224,7 +254,71 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    this.FETCH_MENULIST();
+    // this.FETCH_MENULIST();
   }
 };
 </script>
+<style scoped>
+.icon-shouqi {
+  color: hotpink;
+  /* font-size:20px */
+  cursor: pointer;
+}
+.quit {
+  cursor: pointer;
+  color: hotpink;
+}
+.aa {
+  vertical-align: middle;
+}
+
+/* 修改avatar的样式 */
+.el-avatar.el-avatar--circle {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+/* layout顶栏样式 */
+.grid-content {
+  border-radius: 4px;
+  min-height: 60px;
+}
+.row-bg {
+  background-color: #41b883;
+}
+
+/* container样式 */
+.el-header {
+  background-color: #41b883;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-aside {
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+</style>
